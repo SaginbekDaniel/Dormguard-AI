@@ -1,0 +1,21 @@
+-- Clean-room MVP schema. Applied transactionally by dormguard.database.
+CREATE TABLE IF NOT EXISTS schema_migrations(version INTEGER PRIMARY KEY, applied_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS users(id TEXT PRIMARY KEY,email TEXT UNIQUE NOT NULL,role TEXT UNIQUE NOT NULL CHECK(role IN ('director','deputy_director','technical_admin')),password_hash TEXT,enabled INTEGER NOT NULL DEFAULT 1 CHECK(enabled IN (0,1)),created_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS sessions(token_hash TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,csrf_token TEXT NOT NULL,expires_at DOUBLE PRECISION NOT NULL,provider_token TEXT);
+CREATE TABLE IF NOT EXISTS cameras(id TEXT PRIMARY KEY,name TEXT NOT NULL,location TEXT NOT NULL,kind TEXT NOT NULL CHECK(kind IN ('rtsp','test')),source_ref TEXT NOT NULL,enabled INTEGER NOT NULL DEFAULT 1 CHECK(enabled IN (0,1)),created_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS stream_tickets(token_hash TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,camera_id TEXT NOT NULL REFERENCES cameras(id),session_hash TEXT NOT NULL,expires_at DOUBLE PRECISION NOT NULL);
+CREATE TABLE IF NOT EXISTS camera_health(camera_id TEXT PRIMARY KEY REFERENCES cameras(id) ON DELETE CASCADE,state TEXT NOT NULL,last_frame_at DOUBLE PRECISION,detail TEXT NOT NULL,updated_at DOUBLE PRECISION NOT NULL);
+CREATE TABLE IF NOT EXISTS worker_health(name TEXT PRIMARY KEY,state TEXT NOT NULL,detail TEXT NOT NULL,metrics TEXT NOT NULL,updated_at DOUBLE PRECISION NOT NULL);
+CREATE TABLE IF NOT EXISTS incidents(id TEXT PRIMARY KEY,camera_id TEXT NOT NULL REFERENCES cameras(id),status TEXT NOT NULL CHECK(status IN ('DETECTED','PENDING_REVIEW','ACKNOWLEDGED','RESPONDING','CONFIRMED','RESOLVED','CLOSED','FALSE_POSITIVE')),score DOUBLE PRECISION NOT NULL CHECK(score>=0 AND score<=1),model TEXT NOT NULL,detected_at TEXT NOT NULL,detected_epoch DOUBLE PRECISION NOT NULL,event_key TEXT UNIQUE,created_at TEXT NOT NULL,updated_at TEXT NOT NULL);
+CREATE INDEX IF NOT EXISTS incidents_camera_time ON incidents(camera_id,detected_epoch);
+CREATE INDEX IF NOT EXISTS incidents_status ON incidents(status);
+CREATE TABLE IF NOT EXISTS incident_keys(event_key TEXT PRIMARY KEY,incident_id TEXT NOT NULL REFERENCES incidents(id));
+CREATE TABLE IF NOT EXISTS events(id TEXT PRIMARY KEY,incident_id TEXT NOT NULL REFERENCES incidents(id),actor_id TEXT REFERENCES users(id),kind TEXT NOT NULL,previous_state TEXT,new_state TEXT,reason TEXT NOT NULL,detail TEXT NOT NULL,created_at TEXT NOT NULL);
+CREATE INDEX IF NOT EXISTS events_incident ON events(incident_id,created_at);
+CREATE TABLE IF NOT EXISTS evidence(id TEXT PRIMARY KEY,incident_id TEXT NOT NULL REFERENCES incidents(id),path TEXT UNIQUE NOT NULL,original_name TEXT NOT NULL,sha256 TEXT NOT NULL,size_bytes BIGINT NOT NULL CHECK(size_bytes>=0),clip_start DOUBLE PRECISION NOT NULL,clip_end DOUBLE PRECISION NOT NULL CHECK(clip_end>=clip_start),created_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS telegram_bindings(user_id TEXT PRIMARY KEY REFERENCES users(id),chat_id TEXT UNIQUE NOT NULL,created_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS telegram_links(token_hash TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES users(id),expires_at DOUBLE PRECISION NOT NULL);
+CREATE TABLE IF NOT EXISTS notification_outbox(id TEXT PRIMARY KEY,incident_id TEXT NOT NULL REFERENCES incidents(id),user_id TEXT NOT NULL REFERENCES users(id),state TEXT NOT NULL CHECK(state IN ('queued','sending','accepted','blocked','failed','cancelled')),attempts INTEGER NOT NULL DEFAULT 0,next_attempt DOUBLE PRECISION NOT NULL,lease_until DOUBLE PRECISION,lease_token TEXT,last_error TEXT,provider_id TEXT,created_at TEXT NOT NULL,UNIQUE(incident_id,user_id));
+CREATE INDEX IF NOT EXISTS outbox_due ON notification_outbox(state,next_attempt);
+CREATE TABLE IF NOT EXISTS notification_attempts(id TEXT PRIMARY KEY,outbox_id TEXT NOT NULL REFERENCES notification_outbox(id),state TEXT NOT NULL,detail TEXT NOT NULL,created_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS audit_logs(id TEXT PRIMARY KEY,actor_id TEXT REFERENCES users(id),action TEXT NOT NULL,resource_id TEXT NOT NULL,detail TEXT NOT NULL,created_at TEXT NOT NULL,previous_hash TEXT NOT NULL,hash TEXT UNIQUE NOT NULL);

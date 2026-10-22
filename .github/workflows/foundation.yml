@@ -1,0 +1,68 @@
+name: Clean-room application and transfer tooling
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  application:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7.0.0
+        with:
+          python-version: '3.12'
+      - name: Install runtime and verification dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          python -m pip install -r requirements-dev.txt
+      - name: Check tooling syntax
+        run: python -m py_compile tools/check_source_readiness.py tools/tests/test_source_readiness.py
+      - name: Scan tracked source without printing secret values
+        run: python tools/scan_source_secrets.py
+      - name: Test transfer tooling only
+        run: python -m unittest discover -s tools/tests -v
+      - name: Check expected file inventory (presence only)
+        run: python tools/check_source_readiness.py
+      - name: Application regressions on disposable data
+        run: python -m unittest discover -s tests -v
+      - name: Static verification and dependency consistency
+        run: |
+          python -m compileall -q dormguard scripts tests
+          ruff check dormguard scripts tests
+          ruff format --check dormguard scripts tests
+          python -m pip check
+          node --check dormguard/app.js
+      # Real hosted Auth, Telegram, public media and checkpoint inference are
+      # separate explicit gates. No secrets, live messages or model downloads.
+  browser-contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install development-only browser runtime
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+      - name: Controlled API contract browser tests
+        run: npm run test:frontend
+  online-image:
+    needs: [application, browser-contracts]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - name: Build non-root CPU inference image without private assets
+        run: docker build --file Dockerfile.online --tag dormguard-online-demo:ci .
+      - name: Verify packaged dependency imports
+        run: docker run --rm --entrypoint python dormguard-online-demo:ci -c "import torch, cv2, transformers, dormguard.service; assert not torch.cuda.is_available()"

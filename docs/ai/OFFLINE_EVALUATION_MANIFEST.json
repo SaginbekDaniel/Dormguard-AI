@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "scope": "One public-domain staged physical-conflict scene plus two independent historical negative source films; descriptive demo-only evaluation, not held-out field validation.",
+  "samples": [
+    {
+      "id": "staged-tender-conflict",
+      "file": "staged-conflict-train-1903.mp4",
+      "sha256": "a4cbd59f43ded083e7469e18a0e8e323124fd5885c1f8b4f5ace14c33a0c96cc",
+      "camera_id": "train-tender-1903",
+      "scene_id": "train-tender-1903",
+      "scenario": "staged_physical_conflict",
+      "cohort": "proxy_behavior",
+      "occlusion": "partial objects; distant historical film",
+      "provenance": "https://commons.wikimedia.org/wiki/File:The_Great_Train_Robbery_(1903)_-_yt.webm",
+      "authorization": "User offline MVP request permits public-domain non-graphic media; source PDM1.0 author Edwin S.Porter died1941. Silent2013 revision removes unlicensed added audio. No institutional footage.",
+      "start_seconds": 0,
+      "end_seconds": 30,
+      "events": [
+        {
+          "start_seconds": 3,
+          "end_seconds": 24
+        }
+      ],
+      "notes": "Staged attack/grappling on train tender, not sport or actual surveillance. Bounds from sequential FFmpeg contact sheets before inference, coarse single reviewer +/-2.5s; no held-out quality claim. Derived from original210-240s, originalsha256 66cc0314a8eb446ea29a7e5605836838ae7bb13d79ec279903cacf267c3bec5e."
+    },
+    {
+      "id": "consensual-boxing-negative",
+      "file": "positive-boxing.ogv",
+      "sha256": "61fba2483c4640233d173be18773cfc6dd2584baf8adb3cca8ab3d576442ef69",
+      "camera_id": "positive-boxing",
+      "scene_id": "positive-boxing",
+      "scenario": "consensual_boxing_hard_negative",
+      "cohort": "proxy_behavior",
+      "occlusion": "not_annotated",
+      "provenance": "https://upload.wikimedia.org/wikipedia/commons/6/6f/Leonard_Cushing_Kinetograph_1894.ogv",
+      "authorization": "Public-domain sources previously reviewed; current mission authorizes safe public proxy evaluation; no field rights established",
+      "start_seconds": 5,
+      "end_seconds": 39,
+      "events": [],
+      "notes": "Task label distinguishes sport from physical aggression; historical expected-suspicion proxy results remain separate."
+    },
+    {
+      "id": "negative-greeting",
+      "file": "negative-greeting.webm",
+      "sha256": "b0a20302035dab8d0f56e6febc927f63a16d48be53989c0f9e1ea6cc9512df3a",
+      "camera_id": "negative-greeting",
+      "scene_id": "negative-greeting",
+      "scenario": "greeting",
+      "cohort": "proxy_behavior",
+      "occlusion": "not_annotated",
+      "provenance": "https://upload.wikimedia.org/wikipedia/commons/3/37/Dickson_Greeting_%281891%29.webm",
+      "authorization": "Public-domain sources previously reviewed; current mission authorizes safe public proxy evaluation; no field rights established",
+      "start_seconds": 0,
+      "end_seconds": 14,
+      "events": [],
+      "notes": "Task label distinguishes sport from physical aggression; historical expected-suspicion proxy results remain separate."
+    }
+  ]
+}

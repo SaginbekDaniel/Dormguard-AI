@@ -1,0 +1,20 @@
+{
+  "name": "VideoMAE offline demo \u2014 uncalibrated violence/nonviolence",
+  "format": "videomae_safetensors_demo",
+  "checkpoint_dir": "../../checkpoints/cliffer-videomae",
+  "source_url": "https://huggingface.co/cliffer1/videomae-base-finetuned-kinetics-violence-nonviolence-tuned",
+  "revision": "613844b1d2d27f68944619bf91885a9befb101ac",
+  "license": "CC-BY-NC-4.0",
+  "rights_record": "User22October2026 offline hackathon request permits noncommercial local pretrained evaluation. Attribution cliffer1 and MCG-NJU VideoMAE. Weights unmodified. Unknown training-data provenance; commercial or institutional deployment not approved.",
+  "frames": 16,
+  "labels": [
+    "NonViolence",
+    "Violence"
+  ],
+  "files": {
+    "config.json": "59e7a7ba3196e7d7272304b16dc59e15b09b9f17832d76e8cbd9755487afa8ed",
+    "preprocessor_config.json": "4bc9b255ff212041bc28127d4fa0ae1630abca52bb2d882f3e4c0b9e5b763f06",
+    "README.md": "0d2adb5b283c3c4bd8fd087d5ce85d0c2a6528c7ca6cc6ff65da51645452614f",
+    "model.safetensors": "5166b055ebee1439d6517c5bf2d516dce7a1f65afc53367f43b5848970853d53"
+  }
+}

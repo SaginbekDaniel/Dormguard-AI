@@ -1,0 +1,14 @@
+{
+  "name": "dormguard-frontend-verification",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Development-only browser verification; application frontend has no build dependency",
+  "scripts": {
+    "check": "node --check dormguard/app.js",
+    "test:frontend": "node tests/frontend_browser.cjs",
+    "test:browser-api": "node tests/frontend_api_browser.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1"
+  }
+}
