@@ -1,0 +1,5 @@
+;; macOS acceptance profile: inherited by API, model worker and FFmpeg.
+(version 1)
+(allow default)
+(deny network-outbound)
+(allow network-outbound (remote ip "localhost:*"))

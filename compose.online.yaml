@@ -1,0 +1,22 @@
+name: dormguard-online-demo
+services:
+  app:
+    image: dormguard-online-demo:local
+    build:
+      context: .
+      dockerfile: Dockerfile.online
+    env_file: ${DORMGUARD_ONLINE_CONFIG:-.env.online.example}
+    ports: ["127.0.0.1:8000:8000"]
+    volumes:
+      - online-private:/app/data
+    read_only: true
+    tmpfs: ["/tmp:mode=1777,size=512m"]
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    mem_limit: 3g
+    cpus: 2
+    init: true
+    stop_grace_period: 45s
+    restart: unless-stopped
+volumes:
+  online-private:

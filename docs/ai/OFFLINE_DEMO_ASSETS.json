@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "scope": "One public-domain staged physical-conflict scene plus two independent historical negative source films; descriptive demo-only evaluation, not held-out field validation.",
+  "sources": [
+    {
+      "name": "Staged physical conflict \u2014 1903 train film",
+      "scenario": "staged_physical_conflict",
+      "file": "../../test-data/public-evaluation/staged-conflict-train-1903.mp4",
+      "sha256": "a4cbd59f43ded083e7469e18a0e8e323124fd5885c1f8b4f5ace14c33a0c96cc",
+      "start_seconds": 0,
+      "end_seconds": 30,
+      "provenance": "https://commons.wikimedia.org/wiki/File:The_Great_Train_Robbery_(1903)_-_yt.webm",
+      "rights": "User offline MVP request permits public-domain non-graphic media; source PDM1.0 author Edwin S.Porter died1941. Silent2013 revision removes unlicensed added audio. No institutional footage."
+    },
+    {
+      "name": "Sports negative control \u2014 historical boxing",
+      "scenario": "sports",
+      "file": "../../test-data/public-evaluation/positive-boxing.ogv",
+      "sha256": "61fba2483c4640233d173be18773cfc6dd2584baf8adb3cca8ab3d576442ef69",
+      "start_seconds": 5,
+      "end_seconds": 39,
+      "provenance": "https://hdl.loc.gov/loc.mbrsmi/edmp.4026",
+      "rights": "Public Domain Mark 1.0; existing reviewed source docs/engineering/PUBLIC_EVALUATION_SOURCES.json. Sports is not aggression-positive."
+    },
+    {
+      "name": "Normal movement \u2014 historical greeting",
+      "scenario": "normal_movement",
+      "file": "../../test-data/public-evaluation/negative-greeting.webm",
+      "sha256": "b0a20302035dab8d0f56e6febc927f63a16d48be53989c0f9e1ea6cc9512df3a",
+      "start_seconds": 0,
+      "end_seconds": 14,
+      "provenance": "https://commons.wikimedia.org/wiki/File:Dickson_Greeting_(1891).webm",
+      "rights": "Public Domain Mark 1.0; existing reviewed source docs/engineering/PUBLIC_EVALUATION_SOURCES.json. Repeated short film, not independent windows."
+    }
+  ]
+}

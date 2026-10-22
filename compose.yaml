@@ -1,0 +1,46 @@
+name: dormguard-evaluation
+x-runtime: &runtime
+  image: dormguard-evaluation:local
+  env_file: ${DORMGUARD_CONFIG_FILE:-.env.example}
+  environment:
+    DORMGUARD_DATA: /app/data
+  volumes:
+    - dormguard-private:/app/data
+    - ./checkpoints:/app/checkpoints:ro
+  read_only: true
+  tmpfs:
+    - /tmp:mode=1777,size=256m
+  security_opt:
+    - no-new-privileges:true
+  cap_drop: [ALL]
+  restart: unless-stopped
+services:
+  api:
+    <<: *runtime
+    build:
+      context: .
+      args:
+        INSTALL_AI: ${DORMGUARD_INSTALL_AI:-0}
+    ports:
+      - "127.0.0.1:8000:8000"
+    mem_limit: 768m
+  inference:
+    <<: *runtime
+    command: [python, -m, dormguard.worker]
+    depends_on:
+      api:
+        condition: service_healthy
+    mem_limit: 3g
+    healthcheck:
+      disable: true
+  notifications:
+    <<: *runtime
+    command: [python, -m, dormguard.notifications]
+    depends_on:
+      api:
+        condition: service_healthy
+    mem_limit: 384m
+    healthcheck:
+      disable: true
+volumes:
+  dormguard-private:

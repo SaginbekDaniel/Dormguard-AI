@@ -1,0 +1,4 @@
+# Connected setup for macOS/Linux; no installation occurs during offline launch.
+-r requirements.txt
+-r requirements-demo-ai.txt
+imageio-ffmpeg==0.6.0

@@ -1,0 +1,4 @@
+# Optional offline alternative-model research only; not required by the application.
+-r requirements-ai.txt
+transformers==4.57.6
+certifi==2026.10.19
